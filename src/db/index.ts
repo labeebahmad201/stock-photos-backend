@@ -6,7 +6,7 @@ export default async function() {
   const DB_PASSWORD = env.DB_PASSWORD;
   const DB_NAME = env.DB_NAME;
 
-  const connectionString: string = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.wqnzi.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
+  const connectionString = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.wqnzi.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
 
   try {
     await mongoose.connect(connectionString);
