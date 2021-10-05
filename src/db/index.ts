@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import env from './../config/dotenv';
 
-export default async function() {
+export default async function(cb?: Function) {
   const DB_USER = env.DB_USER;
   const DB_PASSWORD = env.DB_PASSWORD;
   const DB_NAME = env.DB_NAME;
@@ -11,6 +11,10 @@ export default async function() {
   try {
     await mongoose.connect(connectionString);
     console.log('Connected to database');
+
+    if (cb !== undefined) {
+      cb();
+    }
   } catch (e) {
     console.log('DB connection failed', e);
   }

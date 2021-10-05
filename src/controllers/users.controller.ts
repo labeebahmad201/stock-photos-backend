@@ -7,7 +7,7 @@ interface LoginResp {
 }
 
 function login(req: Request, res: Response) {
-  const response:LoginResp = { id: 1, name: 'labeeb1' };
+  const response: LoginResp = { id: 1, name: 'labeeb1' };
   return sendResp<LoginResp>(res, response);
 }
 
