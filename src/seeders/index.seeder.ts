@@ -1,6 +1,5 @@
-import UserSeeder from './users.seeder';
-import db from './../db/index';
+import RoleSeeder from './roles.seeder';
 
-db(function() {
-  UserSeeder();
-});
+export default function() {
+  RoleSeeder();
+}

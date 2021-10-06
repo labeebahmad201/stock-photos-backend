@@ -7,4 +7,8 @@ export default {
   password: yup.string().required(),
   username: yup.string().required(),
   phone: yup.string().required(),
+  role: yup
+    .mixed()
+    .oneOf(['Seller', 'Buyer'])
+    .required(),
 };
