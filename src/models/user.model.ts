@@ -1,14 +1,31 @@
+/* eslint-disable @typescript-eslint/camelcase */
+
 import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
-  id: Number,
-  firstname: String,
-  lastname: String,
-  email: String,
-}, 
-{timestamps: true}
-);
+export interface UserDocument extends mongoose.Document {
+  username: String;
+  email: String;
+  firstname: String;
+  lastname: String;
+  password: String;
+  phone: String;
 
-const UserModel = mongoose.model('User', UserSchema);
+  created_at: Date;
+  updated_at: Date;
+}
+
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
+  password: { type: String, required: true },
+  phone: { type: String, required: true, unique: true },
+
+  created_at: { type: Date, default: Date.now, required: true },
+  updated_at: { type: Date, default: Date.now, required: true },
+});
+
+const UserModel = mongoose.model<UserDocument>('User', UserSchema);
 
 export default UserModel;

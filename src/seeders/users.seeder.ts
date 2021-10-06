@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/camelcase */
+
 import User from '../models/user.model';
 
 export default function() {

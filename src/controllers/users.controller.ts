@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { sendResp } from './../helpers';
+import UserService from './../services/users.service';
 
 interface LoginResp {
   id: number;
@@ -11,4 +12,17 @@ function login(req: Request, res: Response) {
   return sendResp<LoginResp>(res, response);
 }
 
-export { login };
+async function register(req: Request, res: Response) {
+  const userService = new UserService();
+
+  userService
+    .register(req.body)
+    .then(resp => {
+      return sendResp<any>(res, { user: resp }, 200);
+    })
+    .catch(err => {
+      return sendResp<any>(res, { user: err }, 422);
+    });
+}
+
+export { login, register };
