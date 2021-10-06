@@ -8,6 +8,7 @@ import EmailToken, { EmailTokenDocument } from './../models/emailtoken.model';
 import uniqid from 'uniqid';
 import EmailService from './email.service';
 import dotenv from './../config/dotenv';
+import _ from "lodash";
 
 export default class UsersService {
   register(data: any): Promise<any> {
@@ -61,13 +62,12 @@ export default class UsersService {
                                     <a href="${dotenv.FRONT_END_BASE_URL}/email/verifiy/${emailToken.token}">here</a> 
                                     to verify your email.
                                     `;
-
             emailService.sendMail(
               user.email.toString(),
               'SignUp Email',
               msgBody,
             );
-            resolve(newUser);
+            resolve(_.omit(newUser.toJSON(), ["password", "_id"]));
           } else {
             let msg;
             if (resp[0].length > 0) {
