@@ -5,6 +5,8 @@ import database from './db/index';
 
 const app: Application = express();
 
+app.use(express.json());
+
 const PORT = env.PORT;
 
 app.listen(PORT, () => {
