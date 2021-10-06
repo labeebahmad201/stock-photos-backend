@@ -3,12 +3,13 @@ import UserModel, { UserDocument } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import appConfig from './../config/app';
 import Role from './../models/role.model';
-import User from "./../models/user.model";
+import User from './../models/user.model';
 import EmailToken, { EmailTokenDocument } from './../models/emailtoken.model';
 import uniqid from 'uniqid';
+import EmailService from './email.service';
+import dotenv from './../config/dotenv';
 
 export default class UsersService {
-
   register(data: any): Promise<any> {
     return new Promise((resolve, reject) => {
       try {
@@ -55,6 +56,17 @@ export default class UsersService {
             emailToken.user = newUser._id;
             await emailToken.save();
 
+            const emailService = new EmailService();
+            const msgBody = `Hi ${user.firstname} ${user.lastname}, Your Sign Up is almost complete, please click 
+                                    <a href="${dotenv.FRONT_END_BASE_URL}/email/verifiy/${emailToken.token}">here</a> 
+                                    to verify your email.
+                                    `;
+
+            emailService.sendMail(
+              user.email.toString(),
+              'SignUp Email',
+              msgBody,
+            );
             resolve(newUser);
           } else {
             let msg;
@@ -82,44 +94,42 @@ export default class UsersService {
     return Role.find({ name: roleName });
   }
 
-  async verifyEmail(data: any){
-
-    return new Promise((resolve, reject)=>{
-      EmailToken
-      .findOne({token: data.token})
-      .populate('user')
-      .then((emailToken)=>{
-        if(!emailToken){
+  async verifyEmail(data: any) {
+    return new Promise((resolve, reject) => {
+      EmailToken.findOne({ token: data.token })
+        .populate('user')
+        .then(emailToken => {
+          if (!emailToken) {
+            reject({
+              status: false,
+              message: 'Expired token',
+            });
+            return;
+          }
+          if (emailToken.user) {
+            const _id = JSON.parse(JSON.stringify(emailToken.user))._id;
+            User.findOneAndUpdate({ _id: _id }, { is_verified: true }).then(
+              () => {
+                EmailToken.deleteOne({ _id: emailToken._id })
+                  .then(r => {
+                    resolve({
+                      status: true,
+                      message: 'Email verified',
+                    });
+                  })
+                  .catch(e => {
+                    console.log(e);
+                  });
+              },
+            );
+          }
+        })
+        .catch(e => {
           reject({
             status: false,
-            message: 'Expired token'
-          });          
-          return;
-        }
-        if(emailToken.user){
-          const _id = JSON.parse(JSON.stringify(emailToken.user))._id;
-          User.findOneAndUpdate({_id: _id}, {is_verified: true})
-          .then(()=>{
-            EmailToken.deleteOne({_id: emailToken._id})
-            .then((r)=>{
-              resolve({
-                status: true,
-                message: 'Email verified'
-              });                 
-            })
-            .catch((e)=>{
-              console.log(e);
-            })
+            message: 'Expired token',
           });
-        }   
-      })
-      .catch((e)=>{
-        reject({
-          status: false,
-          message: 'Expired token'
-        });           
-      });
+        });
     });
- 
   }
 }
