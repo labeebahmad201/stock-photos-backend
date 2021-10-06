@@ -14,11 +14,7 @@ export default function(app: Application) {
   /****
    * register route
    */
-  app.post(
-    '/register',
-    validateRequest(registerSchema),
-    UserController.register,
-  );
+  app.post('/register', validateRequest(registerSchema), UserController.register);
 
   app.get('/run-seeders', SeedersController.run);
 

@@ -3,6 +3,8 @@ import UserModel, { UserDocument } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import appConfig from './../config/app';
 import Role from './../models/role.model';
+import EmailToken, {EmailTokenDocument} from "./../models/emailtoken.model";
+import uniqid from "uniqid";
 
 export default class UsersService {
   register(data: any): Promise<any> {
@@ -46,6 +48,11 @@ export default class UsersService {
             user.password = hashedPassword;
             user.username = data.username;
             const newUser = await user.save();
+            const emailToken: EmailTokenDocument = new EmailToken;
+            emailToken.token = uniqid();
+            emailToken.user = newUser._id;
+            await emailToken.save();
+
             resolve(newUser);
           } else {
             let msg;

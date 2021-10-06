@@ -3,8 +3,7 @@
 import Role from '../models/role.model';
 
 export default async function() {
-  let AlreadyPresentRoles = await Role.find({});
-  console.log('AlreadyPresentRoles', AlreadyPresentRoles);
+  const AlreadyPresentRoles = await Role.find({});
   if (AlreadyPresentRoles.length > 0) {
     return;
   }
