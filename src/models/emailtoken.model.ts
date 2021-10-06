@@ -12,11 +12,14 @@ export interface EmailTokenDocument extends mongoose.Document {
 
 const EmailTokenSchema = new mongoose.Schema({
   token: { type: String, required: true },
-  user: {type: mongoose.Schema.Types.ObjectId, ref:"User", required: true},
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   created_at: { type: String, default: Date.now },
   updated_at: { type: String, default: Date.now },
 });
 
-const EmailModel = mongoose.model<EmailTokenDocument>('EmailToken', EmailTokenSchema);
+const EmailModel = mongoose.model<EmailTokenDocument>(
+  'EmailToken',
+  EmailTokenSchema,
+);
 
 export default EmailModel;
