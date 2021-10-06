@@ -24,7 +24,7 @@ export default function(app: Application) {
   app.post(
     '/api/verify/email/:token',
     SignUpVerificationController.verifyEmail,
-  );  
+  );
 
   app.get('/run-seeders', SeedersController.run);
 
