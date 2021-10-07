@@ -8,7 +8,8 @@ import EmailToken, { EmailTokenDocument } from './../models/emailtoken.model';
 import uniqid from 'uniqid';
 import EmailService from './email.service';
 import dotenv from './../config/dotenv';
-import _ from "lodash";
+import _ from 'lodash';
+import jwt from "jsonwebtoken";
 
 export default class UsersService {
   register(data: any): Promise<any> {
@@ -67,7 +68,7 @@ export default class UsersService {
               'SignUp Email',
               msgBody,
             );
-            resolve(_.omit(newUser.toJSON(), ["password", "_id"]));
+            resolve(_.omit(newUser.toJSON(), ['password', '_id']));
           } else {
             let msg;
             if (resp[0].length > 0) {
@@ -130,6 +131,50 @@ export default class UsersService {
             message: 'Expired token',
           });
         });
+    });
+  }
+
+  login(data: any) {
+    return new Promise((resolve, reject)=>{
+        
+      User.findOne({
+        $or: [
+          {email: data.email},
+          {username: data.email},
+        ]
+      })
+      .populate({
+        path: 'role',
+        select: 'name -_id'
+      })
+      .then(async(user)=>{
+
+        if(!dotenv.JWT_SECRET_KEY){
+          throw new Error('JWT_SECRET_KEY is undefined');
+        }
+
+        if(user){
+          const isAMatch = await bcrypt.compare(data.password, user.password.toString());
+          if(isAMatch === true){
+            const userClone = _.omit(JSON.parse(JSON.stringify(user)), ['password', '_id']);
+            const token = jwt.sign(                
+              userClone,
+              dotenv.JWT_SECRET_KEY,
+              {
+                expiresIn: '2h'
+              }
+            );
+            
+            resolve({
+              access_token: token,
+              user: userClone
+            });
+          }else {
+            reject(false);
+          }
+        }
+      });
+
     });
   }
 }
