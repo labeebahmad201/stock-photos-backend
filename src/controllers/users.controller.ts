@@ -2,14 +2,17 @@ import { Request, Response } from 'express';
 import { sendResp } from './../helpers';
 import UserService from './../services/users.service';
 
-interface LoginResp {
-  id: number;
-  name: string;
-}
 
 function login(req: Request, res: Response) {
-  const response: LoginResp = { id: 1, name: 'labeeb1' };
-  return sendResp<LoginResp>(res, response);
+  const userService = new UserService();
+  userService.login(req.body)
+  .then(resp => {
+    return sendResp<any>(res, { ...resp }, 200);
+  })
+  .catch(err => {
+    return sendResp<any>(res, { status: err }, 422);
+  });
+
 }
 
 async function register(req: Request, res: Response) {
@@ -24,5 +27,8 @@ async function register(req: Request, res: Response) {
       return sendResp<any>(res, { user: err }, 422);
     });
 }
+
+
+
 
 export { login, register };

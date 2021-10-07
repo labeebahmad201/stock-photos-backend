@@ -10,7 +10,7 @@ export default function(app: Application) {
   /****
    * login route
    */
-  app.get('/api/login', UserController.login);
+  app.post('/api/login', UserController.login);
 
   /****
    * register route
