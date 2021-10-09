@@ -1,9 +1,8 @@
-import { File } from 'formidable';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class UploadsService {
-  async upload(file: File): [true | false, string, any] {
+  async upload(file) {
     const lastOccurenceOfDot = file.name.lastIndexOf('.');
     let extension = '';
 
