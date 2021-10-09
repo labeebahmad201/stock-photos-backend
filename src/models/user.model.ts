@@ -14,6 +14,9 @@ export interface UserDocument extends mongoose.Document {
   updated_at: Date;
   is_verified: Boolean;
   role: mongoose.Schema.Types.ObjectId;
+  avatar_image?: String;
+  cover_image?: String;
+  biography?: String;
 }
 
 const UserSchema = new mongoose.Schema({
@@ -27,6 +30,9 @@ const UserSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now, required: true },
   is_verified: { type: Boolean, default: false },
   role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role', required: true },
+  avatar_image: { type: String },
+  cover_image: { type: String },
+  biography: { type: String },
 });
 
 const UserModel = mongoose.model<UserDocument>('User', UserSchema);

@@ -9,7 +9,9 @@ import uniqid from 'uniqid';
 import EmailService from './email.service';
 import dotenv from './../config/dotenv';
 import _ from 'lodash';
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import { Request } from 'express';
+import util from 'util';
 
 export default class UsersService {
   register(data: any): Promise<any> {
@@ -135,46 +137,105 @@ export default class UsersService {
   }
 
   login(data: any) {
-    return new Promise((resolve, reject)=>{
-        
+    return new Promise((resolve, reject) => {
       User.findOne({
-        $or: [
-          {email: data.email},
-          {username: data.email},
-        ]
+        $or: [{ email: data.email }, { username: data.email }],
       })
-      .populate({
-        path: 'role',
-        select: 'name -_id'
-      })
-      .then(async(user)=>{
-
-        if(!dotenv.JWT_SECRET_KEY){
-          throw new Error('JWT_SECRET_KEY is undefined');
-        }
-
-        if(user){
-          const isAMatch = await bcrypt.compare(data.password, user.password.toString());
-          if(isAMatch === true){
-            const userClone = _.omit(JSON.parse(JSON.stringify(user)), ['password', '_id']);
-            const token = jwt.sign(                
-              userClone,
-              dotenv.JWT_SECRET_KEY,
-              {
-                expiresIn: '2h'
-              }
-            );
-            
-            resolve({
-              access_token: token,
-              user: userClone
-            });
-          }else {
-            reject(false);
+        .populate({
+          path: 'role',
+          select: 'name -_id',
+        })
+        .then(async user => {
+          if (!dotenv.JWT_SECRET_KEY) {
+            throw new Error('JWT_SECRET_KEY is undefined');
           }
-        }
-      });
 
+          if (user) {
+            const isAMatch = await bcrypt.compare(
+              data.password,
+              user.password.toString(),
+            );
+            if (isAMatch === true) {
+              const userClone = _.omit(JSON.parse(JSON.stringify(user)), [
+                'password',
+              ]);
+              const token = jwt.sign(userClone, dotenv.JWT_SECRET_KEY, {
+                expiresIn: '2h',
+              });
+
+              resolve([
+                true,
+                'Logged In Successfully',
+                {
+                  access_token: token,
+                  user: userClone,
+                },
+              ]);
+            } else {
+              reject([false, 'Incorrect email/password', data]);
+            }
+          }
+        });
     });
+  }
+
+  async updateAccountDetails(req: Request, data: any) {
+    const user = await User.findOne({ _id: req.user._id });
+    if (!user) {
+      return [false, 'User not found'];
+    }
+
+    const emailExists = await User.findOne({
+      email: data.email,
+      _id: { $ne: req.user._id },
+    });
+    const errors = {};
+
+    if (emailExists) {
+      errors['email'] = 'Email already exists';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return [false, 'Validation Error', errors];
+    }
+
+    user.firstname = data.firstname;
+    user.lastname = data.lastname;
+    user.email = data.email;
+
+    const bcryptComparePromisified = util.promisify(bcrypt.compare);
+
+    const isMatch = await bcryptComparePromisified(
+      data.password,
+      user.password.toString(),
+    );
+
+    if (!isMatch) {
+      return [false, 'Incorrect Password', data];
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      data.new_password,
+      appConfig.saltRounds,
+    );
+
+    user.password = hashedPassword;
+    user.biography = data.biography || '';
+
+    try {
+      const userUpdated = await user.save();
+      const userData = _.pick(userUpdated.toJSON(), [
+        'email',
+        'firstname',
+        'lastname',
+        'biography',
+        'cover_image',
+        'avatar_image',
+      ]);
+      return [true, 'Account details updated', userData];
+    } catch (e) {
+      console.log(e);
+      return [false, 'DB query error'];
+    }
   }
 }

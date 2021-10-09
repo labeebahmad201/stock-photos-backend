@@ -5,6 +5,12 @@ import * as SignUpVerificationController from './controllers/signup.verification
 
 import { validateRequest } from './helpers';
 import registerSchema from './schema/register.schema';
+import AuthMiddleware from './middlewares/auth.middleware';
+import AccountDetailsController from './controllers/account.details.controller';
+import accountDetailsSchema from './schema/account.details.schema';
+import UploadsController from './controllers/uploads.controller';
+import UploadsRequestSchema from './schema/uploads.request.schema';
+import attachfilesMiddleware from './middlewares/attachfiles.middleware';
 
 export default function(app: Application) {
   /****
@@ -24,6 +30,20 @@ export default function(app: Application) {
   app.post(
     '/api/verify/email/:token',
     SignUpVerificationController.verifyEmail,
+  );
+
+  app.post(
+    '/api/account-details',
+    AuthMiddleware,
+    validateRequest(accountDetailsSchema),
+    AccountDetailsController.update,
+  );
+
+  app.post(
+    '/api/upload',
+    validateRequest(UploadsRequestSchema),
+    attachfilesMiddleware,
+    UploadsController.upload,
   );
 
   app.get('/run-seeders', SeedersController.run);

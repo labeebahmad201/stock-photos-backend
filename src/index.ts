@@ -9,6 +9,8 @@ app.use(express.json());
 
 const PORT = env.PORT;
 
+app.use('/images', express.static(__dirname + '/uploads'));
+
 app.listen(PORT, () => {
   console.log(`Server is listening at port ${PORT}`);
   routes(app);
