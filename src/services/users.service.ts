@@ -12,6 +12,7 @@ import _ from 'lodash';
 import jwt from 'jsonwebtoken';
 import { Request } from 'express';
 import util from 'util';
+import mongoose from 'mongoose';
 
 export default class UsersService {
   register(data: any): Promise<any> {
@@ -221,6 +222,8 @@ export default class UsersService {
 
     user.password = hashedPassword;
     user.biography = data.biography || '';
+    user.cover_image = data.cover_image || 'https://via.placeholder.com/1000x200';
+    user.avatar_image = data.avatar_image || 'https://via.placeholder.com/150';
 
     try {
       const userUpdated = await user.save();
@@ -234,8 +237,25 @@ export default class UsersService {
       ]);
       return [true, 'Account details updated', userData];
     } catch (e) {
-      console.log(e);
       return [false, 'DB query error'];
     }
   }
+
+  async getAccountDetails(_id: mongoose.Types.ObjectId){
+    const user = await User.findOne({
+      _id: _id
+    })
+    .select('email firstname lastname biography cover_image avatar_image -_id');
+
+    user.biography = user.biography || '';
+    user.cover_image = user.cover_image || 'https://via.placeholder.com/1000x200';
+    user.avatar_image = user.avatar_image || 'https://via.placeholder.com/150';
+
+    if(!user){
+      return [false, 'User Not found', null];
+    }
+
+    return [true, 'User account details found', {user: user}];
+  }
+  
 }
