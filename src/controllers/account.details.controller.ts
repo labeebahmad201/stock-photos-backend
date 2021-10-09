@@ -16,4 +16,11 @@ async function update(req: Request, res: Response) {
   }
 }
 
-export default { update };
+async function get(req: Request, res: Response){
+  const userService = new UserService();
+  
+  const [status, message, payload] = await userService.getAccountDetails(req.user._id);
+  return sendResp<any>(res, payload, 200, status, message);
+}
+
+export default { update, get };

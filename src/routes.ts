@@ -32,6 +32,12 @@ export default function(app: Application) {
     SignUpVerificationController.verifyEmail,
   );
 
+  app.get(
+    '/api/account-details',
+    AuthMiddleware,
+    AccountDetailsController.get,
+  );
+
   app.post(
     '/api/account-details',
     AuthMiddleware,
@@ -41,6 +47,7 @@ export default function(app: Application) {
 
   app.post(
     '/api/upload',
+    AuthMiddleware,    
     validateRequest(UploadsRequestSchema),
     attachfilesMiddleware,
     UploadsController.upload,
