@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Request } from 'express';
 import UserModel from '../models/user.model';
-import AddressModel from '../models/address.model';
+import AddressModel, {AddressDocument} from '../models/address.model';
 import Country from './../models/country.model';
 
 export default class AddressService {
@@ -21,7 +21,7 @@ export default class AddressService {
 
     const country = await Country.findOne({ code: data.country_code });
 
-    let addressModel;
+    let addressModel : AddressDocument;
     if (releventAddressOfType.length === 0) {
       addressModel = new AddressModel();
     } else {
