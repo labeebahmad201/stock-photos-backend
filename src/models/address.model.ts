@@ -14,7 +14,7 @@ export interface AddressDocument extends mongoose.Document {
   zip_code: string;
   phone: string;
   email: string;
-  type: 'billing' | 'shipping';
+  type: string;
   user: mongoose.Schema.Types.ObjectId;
   created_at: Date;
   updated_at: Date;
