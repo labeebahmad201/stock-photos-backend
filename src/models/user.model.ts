@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/ban-types */
 
 import mongoose from 'mongoose';
+import Address from './address.model';
 
 export interface UserDocument extends mongoose.Document {
   username: String;
@@ -17,6 +17,7 @@ export interface UserDocument extends mongoose.Document {
   avatar_image?: String;
   cover_image?: String;
   biography?: String;
+  addresses: [mongoose.Schema.Types.ObjectId];
 }
 
 const UserSchema = new mongoose.Schema({
@@ -33,6 +34,7 @@ const UserSchema = new mongoose.Schema({
   avatar_image: { type: String },
   cover_image: { type: String },
   biography: { type: String },
+  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: Address.modelName }],
 });
 
 const UserModel = mongoose.model<UserDocument>('User', UserSchema);
