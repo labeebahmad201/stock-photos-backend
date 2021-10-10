@@ -30,7 +30,6 @@ export default function(req: Request, res: Response, next: NextFunction) {
 
     req.user = decoded;
     const isVerified = isAccountVerified(req);
-
     if (!isVerified) {
       return sendResp<any>(res, {
         err: 'AuthFailed',

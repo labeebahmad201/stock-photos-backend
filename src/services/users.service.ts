@@ -139,6 +139,7 @@ export default class UsersService {
 
   login(data: any) {
     return new Promise((resolve, reject) => {
+      console.log('data', data);
       User.findOne({
         $or: [{ email: data.email }, { username: data.email }],
       })
@@ -150,6 +151,8 @@ export default class UsersService {
           if (!dotenv.JWT_SECRET_KEY) {
             throw new Error('JWT_SECRET_KEY is undefined');
           }
+
+          console.log('user', user);
 
           if (user) {
             const isAMatch = await bcrypt.compare(
@@ -173,9 +176,10 @@ export default class UsersService {
                 },
               ]);
             } else {
-              reject([false, 'Incorrect email/password', data]);
+              reject([false, 'Incorrect email/password2', data]);
             }
           }
+          reject([false, 'Incorrect email/password1', data]);
         });
     });
   }
@@ -222,7 +226,8 @@ export default class UsersService {
 
     user.password = hashedPassword;
     user.biography = data.biography || '';
-    user.cover_image = data.cover_image || 'https://via.placeholder.com/1000x200';
+    user.cover_image =
+      data.cover_image || 'https://via.placeholder.com/1000x200';
     user.avatar_image = data.avatar_image || 'https://via.placeholder.com/150';
 
     try {
@@ -241,21 +246,22 @@ export default class UsersService {
     }
   }
 
-  async getAccountDetails(_id: mongoose.Types.ObjectId){
+  async getAccountDetails(_id: mongoose.Types.ObjectId) {
     const user = await User.findOne({
-      _id: _id
-    })
-    .select('email firstname lastname biography cover_image avatar_image -_id');
+      _id: _id,
+    }).select(
+      'email firstname lastname biography cover_image avatar_image -_id',
+    );
 
     user.biography = user.biography || '';
-    user.cover_image = user.cover_image || 'https://via.placeholder.com/1000x200';
+    user.cover_image =
+      user.cover_image || 'https://via.placeholder.com/1000x200';
     user.avatar_image = user.avatar_image || 'https://via.placeholder.com/150';
 
-    if(!user){
+    if (!user) {
       return [false, 'User Not found', null];
     }
 
-    return [true, 'User account details found', {user: user}];
+    return [true, 'User account details found', { user: user }];
   }
-  
 }

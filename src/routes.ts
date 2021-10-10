@@ -11,6 +11,9 @@ import accountDetailsSchema from './schema/account.details.schema';
 import UploadsController from './controllers/uploads.controller';
 import UploadsRequestSchema from './schema/uploads.request.schema';
 import attachfilesMiddleware from './middlewares/attachfiles.middleware';
+import AddressController from './controllers/address.controller';
+import UpdateAddressRequestSchema from './schema/update.address.req.schema';
+import GetAddressRequestSchema from './schema/get.address.request.schema';
 
 export default function(app: Application) {
   /****
@@ -32,11 +35,7 @@ export default function(app: Application) {
     SignUpVerificationController.verifyEmail,
   );
 
-  app.get(
-    '/api/account-details',
-    AuthMiddleware,
-    AccountDetailsController.get,
-  );
+  app.get('/api/account-details', AuthMiddleware, AccountDetailsController.get);
 
   app.post(
     '/api/account-details',
@@ -47,10 +46,24 @@ export default function(app: Application) {
 
   app.post(
     '/api/upload',
-    AuthMiddleware,    
+    AuthMiddleware,
     validateRequest(UploadsRequestSchema),
     attachfilesMiddleware,
     UploadsController.upload,
+  );
+
+  app.post(
+    '/api/address',
+    AuthMiddleware,
+    validateRequest(UpdateAddressRequestSchema),
+    AddressController.update,
+  );
+
+  app.get(
+    '/api/address',
+    AuthMiddleware,
+    validateRequest(GetAddressRequestSchema),
+    AddressController.get,
   );
 
   app.get('/run-seeders', SeedersController.run);

@@ -16,10 +16,12 @@ async function update(req: Request, res: Response) {
   }
 }
 
-async function get(req: Request, res: Response){
+async function get(req: Request, res: Response) {
   const userService = new UserService();
-  
-  const [status, message, payload] = await userService.getAccountDetails(req.user._id);
+
+  const [status, message, payload] = await userService.getAccountDetails(
+    req.user._id,
+  );
   return sendResp<any>(res, payload, 200, status, message);
 }
 
