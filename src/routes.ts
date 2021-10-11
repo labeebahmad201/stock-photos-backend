@@ -19,7 +19,8 @@ import StateController from './controllers/state.controller';
 import GetStateRequestSchema from './schema/get.state.request.schema';
 import CollectionController from './controllers/collection.controller';
 import CategoryController from './controllers/category.controller';
-
+import ContributionController from './controllers/contribution.controller';
+import ContributeRequestSchema from './schema/contributeRequest.schema';
 
 export default function(app: Application) {
   /****
@@ -85,7 +86,7 @@ export default function(app: Application) {
 
   app.get('/api/category', AuthMiddleware, CategoryController.index);
 
-  // tags api 
+  app.post('/api/contribute', AuthMiddleware, validateRequest(ContributeRequestSchema), ContributionController.create);
 
   app.get('/run-seeders', SeedersController.run);
 

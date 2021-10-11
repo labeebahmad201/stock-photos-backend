@@ -49,7 +49,7 @@ export default async function() {
       name: 'Videos',
       created_at: now,
       updated_at: now,
-    }
+    },
   ];
 
   Category.insertMany(categories)

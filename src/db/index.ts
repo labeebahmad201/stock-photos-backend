@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import env from './../config/dotenv';
 
+mongoose.set('debug', env.ENV === 'dev' ? true : false);
+
 export default async function(cb?: Function) {
   const DB_USER = env.DB_USER;
   const DB_PASSWORD = env.DB_PASSWORD;
