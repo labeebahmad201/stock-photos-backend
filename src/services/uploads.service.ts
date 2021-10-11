@@ -6,7 +6,7 @@ import sharp from 'sharp';
 export default class UploadsService {
   async upload(file: File, data) {
     const isImage = file.type.indexOf('image/') >= 0 ? true : false;
-    
+
     const lastOccurenceOfDot = file.name.lastIndexOf('.');
     let extension = '';
 
@@ -21,9 +21,9 @@ export default class UploadsService {
 
     let isSecret = data.is_secret ? JSON.parse(data.is_secret) : null;
 
-    if( isSecret === true) {
+    if (isSecret === true) {
       newPath = process.cwd() + '/src/secret/' + fileNewName;
-    }else{
+    } else {
       newPath = process.cwd() + '/src/uploads/' + fileNewName;
     }
 
@@ -33,11 +33,11 @@ export default class UploadsService {
         if (err) {
           resolve(false);
         }
-        if(isImage){
+        if (isImage) {
           self.generateThumbnail(newPath, 100);
-          self.generateThumbnail(newPath, 200);        
-          self.generateThumbnail(newPath, 300);        
-          self.generateThumbnail(newPath, 500);                
+          self.generateThumbnail(newPath, 200);
+          self.generateThumbnail(newPath, 300);
+          self.generateThumbnail(newPath, 500);
         }
         resolve(true);
       });
@@ -46,37 +46,33 @@ export default class UploadsService {
     if (!isItMoved) {
       return [false, 'Something Went Wrong', null];
     } else {
-
-      if(isSecret) {
+      if (isSecret) {
         return [true, 'File Uploaded', { ref: fileNewName }];
       } else {
-        const url = 'http://localhost:3000/images/' + fileNewName;        
+        const url = 'http://localhost:3000/images/' + fileNewName;
         return [true, 'File Uploaded', { url: url }];
       }
-
     }
   }
 
-  async generateThumbnail(path: string, size = 100){
-    
+  async generateThumbnail(path: string, size = 100) {
     const dotLocation = path.lastIndexOf('.');
     const beforeDot = path.substring(0, dotLocation);
-    const afterDot = path.substring(dotLocation);    
+    const afterDot = path.substring(dotLocation);
 
     let thumbPath = beforeDot + `-${size}` + afterDot;
-    
+
     sharp(path)
-    .resize(size)
-    .jpeg({ mozjpeg: true })
-    .toBuffer()
-    .then( data => { 
-      fs.writeFile(thumbPath, data, (err)=>{
+      .resize(size)
+      .jpeg({ mozjpeg: true })
+      .toBuffer()
+      .then(data => {
+        fs.writeFile(thumbPath, data, err => {
+          console.log('err', err);
+        });
+      })
+      .catch(err => {
         console.log('err', err);
       });
-     })
-    .catch( err => { 
-      console.log('err', err);
-     });
-
   }
 }

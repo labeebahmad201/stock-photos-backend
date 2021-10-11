@@ -86,7 +86,12 @@ export default function(app: Application) {
 
   app.get('/api/category', AuthMiddleware, CategoryController.index);
 
-  app.post('/api/contribute', AuthMiddleware, validateRequest(ContributeRequestSchema), ContributionController.create);
+  app.post(
+    '/api/contribute',
+    AuthMiddleware,
+    validateRequest(ContributeRequestSchema),
+    ContributionController.create,
+  );
 
   app.get('/run-seeders', SeedersController.run);
 
