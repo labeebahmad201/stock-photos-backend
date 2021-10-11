@@ -139,7 +139,6 @@ export default class UsersService {
 
   login(data: any) {
     return new Promise((resolve, reject) => {
-      console.log('data', data);
       User.findOne({
         $or: [{ email: data.email }, { username: data.email }],
       })
@@ -151,8 +150,6 @@ export default class UsersService {
           if (!dotenv.JWT_SECRET_KEY) {
             throw new Error('JWT_SECRET_KEY is undefined');
           }
-
-          console.log('user', user);
 
           if (user) {
             const isAMatch = await bcrypt.compare(
