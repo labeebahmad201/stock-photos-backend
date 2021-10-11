@@ -8,7 +8,7 @@ export interface CountryDocument extends mongoose.Document {
   updated_at: Date;
 }
 
-const countrySchema = new mongoose.Schema({
+export const countrySchema = new mongoose.Schema({
   name: { type: String, required: true },
   code: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
