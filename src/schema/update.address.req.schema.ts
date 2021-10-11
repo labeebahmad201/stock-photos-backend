@@ -19,7 +19,7 @@ export default {
     .string()
     .oneOf(countryCodesArr)
     .required(),
-    
+
   state_code: yup
     .string()
     .required()
