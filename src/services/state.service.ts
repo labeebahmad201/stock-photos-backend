@@ -8,8 +8,8 @@ export default class StateService {
         country_code: country_code.toUpperCase(),
       })
       .sort({
-        name: 'asc'
-      })   
+        name: 'asc',
+      })
       .select('name code country_code -_id');
 
     if (states.length === 0) {
