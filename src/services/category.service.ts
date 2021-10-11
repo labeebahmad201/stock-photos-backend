@@ -13,6 +13,6 @@ export default class StateService {
       return [true, 'Something went wrong', categories];
     }
 
-    return [true, 'categories fetched', {categories : categories}];
+    return [true, 'categories fetched', { categories: categories }];
   }
 }

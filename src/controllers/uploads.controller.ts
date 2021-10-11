@@ -5,7 +5,7 @@ import UploadsService from './../services/uploads.service';
 async function upload(req: Request, res: Response) {
   const uploadsService = new UploadsService();
 
-  const [status, message, resp] = await uploadsService.upload(req.files.file);
+  const [status, message, resp] = await uploadsService.upload(req.files.file, req.fields);
   return sendResp<any>(res, { resp }, 200, status, message);
 }
 
