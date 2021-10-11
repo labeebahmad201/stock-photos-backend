@@ -2,13 +2,15 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import mongoose from 'mongoose';
-import Country, {CountryDocument} from './country.model';
+import Country, {countrySchema} from './country.model';
+import {stateSchema} from './state.model';
 
 export interface AddressDocument extends mongoose.Document {
   firstname: string;
   lastname: string;
   company_name?: string;
-  country: CountryDocument;
+  country: countrySchema;
+  state: stateSchema,
   street_address: string;
   city: string;
   zip_code: string;
@@ -24,7 +26,8 @@ const addressSchema = new mongoose.Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   company_name: { type: String },
-  country: { type: Country, required: true },
+  country: { type: countrySchema, required: true },
+  state: { type: stateSchema, required: true },
   street_address: { type: String, required: true },
   city: { type: String, required: true },
   zip_code: { type: String, required: true },

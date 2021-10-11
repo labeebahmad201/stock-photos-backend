@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Request } from 'express';
 import UserModel from '../models/user.model';
-import AddressModel, {AddressDocument} from '../models/address.model';
+import AddressModel, { AddressDocument } from '../models/address.model';
 import Country from './../models/country.model';
+import State from './../models/state.model';
 
 export default class AddressService {
   async updateOrCreate(req: Request, data: any) {
@@ -21,7 +22,9 @@ export default class AddressService {
 
     const country = await Country.findOne({ code: data.country_code });
 
-    let addressModel : AddressDocument;
+    const state = await State.findOne({ country_code: data.country_code, code : data.state_code });
+
+    let addressModel: AddressDocument;
     if (releventAddressOfType.length === 0) {
       addressModel = new AddressModel();
     } else {
@@ -41,6 +44,7 @@ export default class AddressService {
     addressModel.phone = data.phone;
     addressModel.type = data.type;
     addressModel.user = req.user._id;
+    addressModel.state = state;  
 
     const savedAddress = await addressModel.save();
     if (savedAddress) {

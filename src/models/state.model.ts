@@ -9,7 +9,7 @@ export interface StateDocument extends mongoose.Document {
   updated_at: Date;
 }
 
-const stateSchema = new mongoose.Schema({
+export const stateSchema = new mongoose.Schema({
   name: { type: String, required: true },
   country_code: { type: String, required: true },
   code: { type: String, required: true },
