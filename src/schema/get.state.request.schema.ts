@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import Country from './../models/country.model';
 
 export default {
-    country_code: yup
+  country_code: yup
     .string()
     .required()
     .test({

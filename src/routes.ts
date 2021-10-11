@@ -71,7 +71,12 @@ export default function(app: Application) {
 
   app.get('/api/country', AuthMiddleware, CountryController.index);
 
-  app.get('/api/state/:country_code', AuthMiddleware, validateRequest(GetStateRequestSchema), StateController.index);
+  app.get(
+    '/api/state/:country_code',
+    AuthMiddleware,
+    validateRequest(GetStateRequestSchema),
+    StateController.index,
+  );
 
   app.get('/run-seeders', SeedersController.run);
 
