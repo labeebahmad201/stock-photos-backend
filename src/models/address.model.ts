@@ -2,15 +2,15 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import mongoose from 'mongoose';
-import Country, {countrySchema} from './country.model';
-import {stateSchema} from './state.model';
+import Country, { countrySchema } from './country.model';
+import { stateSchema } from './state.model';
 
 export interface AddressDocument extends mongoose.Document {
   firstname: string;
   lastname: string;
   company_name?: string;
   country: countrySchema;
-  state: stateSchema,
+  state: stateSchema;
   street_address: string;
   city: string;
   zip_code: string;

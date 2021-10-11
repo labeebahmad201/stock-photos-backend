@@ -14,6 +14,9 @@ import attachfilesMiddleware from './middlewares/attachfiles.middleware';
 import AddressController from './controllers/address.controller';
 import UpdateAddressRequestSchema from './schema/update.address.req.schema';
 import GetAddressRequestSchema from './schema/get.address.request.schema';
+import CountryController from './controllers/country.controller';
+import StateController from './controllers/state.controller';
+
 
 export default function(app: Application) {
   /****
@@ -65,6 +68,19 @@ export default function(app: Application) {
     validateRequest(GetAddressRequestSchema),
     AddressController.get,
   );
+
+  app.get(
+    '/api/country',
+    AuthMiddleware,
+    CountryController.index,
+  );  
+
+
+  app.get(
+    '/api/state/:country_code',
+    AuthMiddleware,
+    StateController.index,
+  );    
 
   app.get('/run-seeders', SeedersController.run);
 
