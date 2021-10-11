@@ -25,7 +25,7 @@ const validateRequest = (schema: any) => async (
     await yup
       .object()
       .shape(schema)
-      .validate(req.body);
+      .validate({...req.body, ...req.params});
     next();
   } catch (e) {
     console.log(e);

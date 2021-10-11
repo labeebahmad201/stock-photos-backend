@@ -19,27 +19,26 @@ export default {
     .string()
     .oneOf(countryCodesArr)
     .required(),
+
   state_code: yup
     .string()
     .required()
-    .test(
-      {
-        name: 'exists',
-        message: 'Invalid ${path} provided',
-        test: async function(stateCode){
+    .test({
+      name: 'exists',
+      message: 'Invalid ${path} provided',
+      test: async function(stateCode) {
+        const state = await stateModel.findOne({
+          code: stateCode,
+          country_code: this.parent.country_code,
+        });
 
-          const state = await stateModel.findOne({
-            code: stateCode,
-            country_code: this.parent.country_code
-          });
-
-          if(state){
-            return true;
-          }
-
-          return false;          
+        if (state) {
+          return true;
         }
-      }),
+
+        return false;
+      },
+    }),
 
   zip_code: maxLengthRule(yup.string().required(), 100),
   city: maxLengthRule(yup.string().required(), 100),

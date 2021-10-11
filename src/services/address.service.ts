@@ -22,7 +22,10 @@ export default class AddressService {
 
     const country = await Country.findOne({ code: data.country_code });
 
-    const state = await State.findOne({ country_code: data.country_code, code : data.state_code });
+    const state = await State.findOne({
+      country_code: data.country_code,
+      code: data.state_code,
+    });
 
     let addressModel: AddressDocument;
     if (releventAddressOfType.length === 0) {
@@ -44,7 +47,7 @@ export default class AddressService {
     addressModel.phone = data.phone;
     addressModel.type = data.type;
     addressModel.user = req.user._id;
-    addressModel.state = state;  
+    addressModel.state = state;
 
     const savedAddress = await addressModel.save();
     if (savedAddress) {
