@@ -79,11 +79,7 @@ export default function(app: Application) {
     StateController.index,
   );
 
-  app.get(
-    '/api/collection',
-    AuthMiddleware,
-    CollectionController.index,
-  );  
+  app.get('/api/collection', AuthMiddleware, CollectionController.index);
 
   app.get('/run-seeders', SeedersController.run);
 

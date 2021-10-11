@@ -2,7 +2,6 @@
 import stateModel from '../models/state.model';
 
 export default class StateService {
-  
   async getStates(country_code: string) {
     const states = await stateModel
       .find({
@@ -19,5 +18,4 @@ export default class StateService {
 
     return [true, 'States fetched', { states: states }];
   }
-
 }

@@ -15,6 +15,9 @@ const CollectionSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const CollectionModel = mongoose.model<CollectionDocument>('Collection', CollectionSchema);
+const CollectionModel = mongoose.model<CollectionDocument>(
+  'Collection',
+  CollectionSchema,
+);
 
 export default CollectionModel;
