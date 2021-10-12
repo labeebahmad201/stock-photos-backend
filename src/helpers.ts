@@ -44,13 +44,17 @@ const getBearerToken = (authorizationHeader: string) => {
   return false;
 };
 
-const socketRespFormatter = (status: boolean, message : string, payload: any) => {
+const socketRespFormatter = (
+  status: boolean,
+  message: string,
+  payload: any,
+) => {
   return JSON.stringify({
     status: status,
     message: message,
     errors: !status ? payload : null,
     data: status ? payload : null,
   });
-}
+};
 
 export { sendResp, validateRequest, getBearerToken, socketRespFormatter };
