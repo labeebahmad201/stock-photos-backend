@@ -1,0 +1,36 @@
+<html>
+    <head>
+        
+    </head>
+    <body>
+        <h1>user 2</h1>
+        <button id="send_message">send message</button>
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io({
+                extraHeaders: {
+                    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTY1NGY5MWI0OGIyNGIzOWNmZjJiYzgiLCJpc192ZXJpZmllZCI6dHJ1ZSwiYWRkcmVzc2VzIjpbXSwiY3JlYXRlZF9hdCI6IjIwMjEtMTAtMTJUMDk6MDQ6MTcuMDg0WiIsInVwZGF0ZWRfYXQiOiIyMDIxLTEwLTEyVDA5OjA0OjE3LjA4NVoiLCJmaXJzdG5hbWUiOiJsYWJlZWIiLCJsYXN0bmFtZSI6ImFobWFkIiwicGhvbmUiOiIwMDkyMzM3MDQzMzY3OSIsImVtYWlsIjoibGFiZWViYWhtYWQyMDFAZ21haWwuY29tIiwicm9sZSI6eyJuYW1lIjoiU2VsbGVyIn0sInVzZXJuYW1lIjoibGFiZWViMSIsIl9fdiI6MCwiaWF0IjoxNjM0MDM5MDkyLCJleHAiOjE2MzQwNDYyOTJ9.dZD-Cc1qga8Syr_pSy_0RLsWethoE58_mGany8RcWyc"
+                }                
+            });
+
+
+            socket.on('connect', function(){
+                socket.on('new_message', (data)=>{
+                    console.log('new_message data', data);
+                });
+            });
+            
+            function sendMessage(){
+                const msg = JSON.stringify({
+                    text : 'Hello World ',
+                    to: '61629cd446d2e157e3faaf47'
+                });
+                socket.emit('send_message', msg, function(resp){
+                    resp = JSON.parse(resp);
+                    console.log('send_message resp', resp);
+                });
+            }    
+            document.getElementById('send_message').addEventListener('click', sendMessage);
+        </script>
+    </body>
+</html>

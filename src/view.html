@@ -1,0 +1,36 @@
+<html>
+    <head>
+        
+    </head>
+    <body>
+        <h1>User 1</h1>
+        <button id="send_message">send message</button>
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io({
+                extraHeaders: {
+                    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTYyOWNkNDQ2ZDJlMTU3ZTNmYWFmNDciLCJpc192ZXJpZmllZCI6dHJ1ZSwiYWRkcmVzc2VzIjpbIjYxNjJjNjI3ZmZhOGVkMzk0MTZmZjJiNSIsIjYxNjJjYjEzODMwNzRiZmY3NDMwNTg0MiJdLCJjcmVhdGVkX2F0IjoiMjAyMS0xMC0xMFQwNzo1NzowOC41MjJaIiwidXBkYXRlZF9hdCI6IjIwMjEtMTAtMTBUMDc6NTc6MDguNTIyWiIsImZpcnN0bmFtZSI6ImxhYmVlYiIsImxhc3RuYW1lIjoiYWhtYWQiLCJwaG9uZSI6IjAwOTIzMzcwNDMzNjc4IiwiZW1haWwiOiJsYWJlZWJhaG1hZDIwMUBvdXRsb29rLmNvbSIsInJvbGUiOnsibmFtZSI6IlNlbGxlciJ9LCJ1c2VybmFtZSI6ImxhYmVlYiIsIl9fdiI6MiwiYXZhdGFyX2ltYWdlIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwL2ltYWdlcy82NmI1NWUwYi1jMWE4LTQ0MTktYTNiMC1iNTI4NTE5NTA1YzMuanBnIiwiYmlvZ3JhcGh5IjoiIiwiY292ZXJfaW1hZ2UiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAvaW1hZ2VzLzY2YjU1ZTBiLWMxYTgtNDQxOS1hM2IwLWI1Mjg1MTk1MDVjMy5qcGciLCJpYXQiOjE2MzQwMzcwNzYsImV4cCI6MTYzNDA0NDI3Nn0.M6FEhvRmegNOwsA-qkbVJyjEFhPDD2m_VSnjCNr2-k0"
+                }                
+            });
+
+
+            socket.on('connect', function(){
+                socket.on('new_message', (data)=>{
+                    console.log('new_message data', data);
+                });
+            });
+            
+            function sendMessage(){
+                const msg = JSON.stringify({
+                    text : 'Hi, labeeb ',
+                    to: '61654f91b48b24b39cff2bc8'
+                });
+                socket.emit('send_message', msg, function(resp){
+                    resp = JSON.parse(resp);
+                    console.log('send_message resp', resp);
+                });
+            }    
+            document.getElementById('send_message').addEventListener('click', sendMessage);
+        </script>
+    </body>
+</html>
