@@ -33,15 +33,24 @@ const validateRequest = (schema: any) => async (
   }
 };
 
-const getBearerToken = (req: Request) => {
-  if (req.headers && req.headers.authorization) {
-    const splittedBearerValue = req.headers.authorization.split(' ');
-    if (splittedBearerValue.length == 2) {
-      return splittedBearerValue[1]; // bearer token
+const getBearerToken = (authorizationHeader: string) => {
+  if (authorizationHeader) {
+    const splittedBearerValue = authorizationHeader.split(' ');
+    if (splittedBearerValue.length >= 2) {
+      return splittedBearerValue[splittedBearerValue.length - 1].trim(); // bearer token
     }
   }
 
   return false;
 };
 
-export { sendResp, validateRequest, getBearerToken };
+const socketRespFormatter = (status: boolean, message : string, payload: any) => {
+  return JSON.stringify({
+    status: status,
+    message: message,
+    errors: !status ? payload : null,
+    data: status ? payload : null,
+  });
+}
+
+export { sendResp, validateRequest, getBearerToken, socketRespFormatter };
