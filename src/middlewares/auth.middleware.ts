@@ -15,36 +15,34 @@ export const socketAuthMiddleware = function(socket, next) {
   const token = getBearerToken(authHeader);
 
   if (!token) {
-    console.log('Error: token not found', JSON.stringify(token));    
-    socket.disconnect();      
+    console.log('Error: token not found', JSON.stringify(token));
+    socket.disconnect();
   }
 
   if (!dotenv.JWT_SECRET_KEY) {
     console.log('Error: JWT_SECRET_KEY is undefined', JSON.stringify(dotenv));
-    socket.disconnect();        
+    socket.disconnect();
     throw new Error('JWT_SECRET_KEY is undefined');
   }
 
-
   jwt.verify(token, dotenv.JWT_SECRET_KEY, function(error, decoded) {
-    
     if (error) {
-      console.log('Error: jwt error', JSON.stringify(error));  
+      console.log('Error: jwt error', JSON.stringify(error));
       socket.disconnect();
     }
 
     socket.user = decoded;
-    socket.join(socket.user._id.toString());    
+    socket.join(socket.user._id.toString());
     const isVerified = isAccountVerified(socket);
     if (!isVerified) {
       console.log('Error:account not verified', JSON.stringify(socket.user));
-      socket.disconnect();      
+      socket.disconnect();
     }
 
-    console.log('connected>>>');
+    console.log('connected>>>', socket.user.email);
     next();
   });
-}
+};
 
 // default authMiddleware for REST endpoints.
 export default function(req: Request, res: Response, next: NextFunction) {

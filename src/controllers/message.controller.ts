@@ -1,39 +1,55 @@
-import {socketAuthMiddleware} from "../middlewares/auth.middleware";
-import MessageService from "../services/messages.service";
+import { socketAuthMiddleware } from '../middlewares/auth.middleware';
+import MessageService from '../services/messages.service';
 import * as yup from 'yup';
 import sendMessageEventSchema from './../schema/sendMessageEvent.schema';
-import {socketRespFormatter} from './../helpers';
+import { socketRespFormatter } from './../helpers';
 
-export default function(ioServer){
-    
-    ioServer
-    .use(socketAuthMiddleware)
-    .on('connection', function(socket){
+export default function(ioServer) {
+  ioServer.use(socketAuthMiddleware).on('connection', function(socket) {
+    socket.on('send_message', async function(data, akj) {
+      const dataParsed = JSON.parse(data);
+      try {
+        await yup
+          .object()
+          .shape(sendMessageEventSchema)
+          .validate({ ...dataParsed });
 
-        socket.on('send_message', async function(data, akj){
-            const dataParsed = JSON.parse(data);
-            try{
-                await yup.object().shape(sendMessageEventSchema)
-                .validate({...dataParsed});
-                
-                dataParsed.from = socket.user._id;
-                const service = new MessageService();
-                const [status, message, payload] = await service.sendMessage(ioServer, dataParsed);
-                if(akj){
-                    akj(socketRespFormatter(status, message, payload));
-                }
-            }catch(e){
-                console.log('e', e);
-                if(e.errors){
-                    akj(socketRespFormatter(false, e.name +': '+ e.message, e.errors));
-                    return;
-                }
+        dataParsed.from = socket.user._id;
+        const service = new MessageService();
+        const [status, message, payload] = await service.sendMessage(
+          ioServer,
+          dataParsed,
+        );
 
-                akj(socketRespFormatter(false, 'Something went wrong', null));                
-                return;
-            }
-        });
+        if (akj) {
+          akj(socketRespFormatter(status, message, payload));
+        }
+
+      } catch (e) {
+        if (e.errors) {
+          akj(socketRespFormatter(false, e.name + ': ' + e.message, e.errors));
+          return;
+        }
+
+        akj(socketRespFormatter(false, 'Something went wrong', null));
+        return;
+      }
+    });
+
+    socket.on('fetch_conversations', async (data, akj)=>{
+      try{
+        
+        const service = new MessageService();
+        const [status, message, payload] = await service.getConversations(socket.user._id);
+
+        akj(socketRespFormatter(status, message, payload));
+        return;
+      }catch(e){
+        akj(socketRespFormatter(false, e.message, e));
+        return;        
+      }
+    });
 
 
-    })
-}   
+  });
+}
